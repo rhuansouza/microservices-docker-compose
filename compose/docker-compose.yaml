@@ -1,0 +1,44 @@
+version: '3.5'
+
+services:
+  eureka:
+    build: ../curso-spring-boot-micro/eureka
+    container_name: eureka
+    ports:
+      - '8761:8761'
+    networks:
+      - mysqlhost
+    healthcheck:
+      test: ['CMD', 'curl', '-f', 'http://localhost:8761']
+      interval: 5s
+      timeout: 30s
+      retries: 5
+      start_period: 10s
+
+  cadastro:
+    build: ../curso-spring-boot-micro/cadastro
+    container_name: cadastro
+    ports:
+      - '8090:8090'
+    networks:
+      - mysqlhost
+  pedido:
+    build: ../curso-spring-boot-micro/pedido
+    container_name: pedido
+    ports:
+      - '8092:8092'
+    networks:
+      - mysqlhost
+      
+  gateway:
+    build: ../curso-spring-boot-micro/gateway
+    container_name: gateway
+    ports:
+      - '8088:8088'
+    networks:
+      - mysqlhost
+  
+networks:
+  mysqlhost:
+    external: true
+    name: mysqlhost

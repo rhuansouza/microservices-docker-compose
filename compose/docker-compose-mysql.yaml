@@ -1,0 +1,39 @@
+version: '3.5'
+
+services:
+
+  mysql:
+    build: .
+    container_name: bancomysql
+    ports:
+      - 3307:3306
+    volumes:
+      - mysql:/var/lib/mysql
+    security_opt:
+      - seccomp:unconfined
+    networks:
+      - mysqlhost
+
+  rabbitmq:
+    image: rabbitmq:3.8.3-management
+    container_name: rabbitmq
+    ports:
+      - 5672:5672
+      - 15672:15672
+    volumes:
+      - rabbitmq:/var/lib/rabbitmq
+    environment:
+      - RABBITMQ_ERLANG_COOKIE=This_is_my_secret_phrase
+      - RABBITMQ_DEFAULT_USER=admin
+      - RABBITMQ_DEFAULT_PASS=admin
+    networks:
+      - mysqlhost
+
+volumes:
+  mysql:
+  rabbitmq:
+  
+networks:
+  mysqlhost:
+    driver: bridge
+    name: mysqlhost
